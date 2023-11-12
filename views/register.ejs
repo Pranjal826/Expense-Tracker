@@ -1,0 +1,31 @@
+<!-- views/register.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration</title>
+    <link rel="stylesheet" href="stylesheets/register.css">
+</head>
+<body>
+    <div class="register-container">
+        <h1>User Registration</h1>
+        <!-- Registration form -->
+        <form action="/register" method="POST" class="register-form">
+            <label for="username">Username:</label>
+            <input type="text" name="username" required>
+
+            <label for="email">Email:</label>
+            <input type="email" name="email" required>
+
+            <label for="password">Password:</label>
+            <input type="password" name="password" required>
+
+            <button type="submit" class="register-button">Register</button>
+        </form>
+
+        <!-- Link to the login page -->
+        <p class="login-link">Already have an account? <a href="/login">Login here</a></p>
+    </div>
+</body>
+</html>

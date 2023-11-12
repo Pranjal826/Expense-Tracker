@@ -1,0 +1,93 @@
+<!-- views/dashboard.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="stylesheets/style.css">
+    <link rel="stylesheet" href="stylesheets/dashboard.css">
+   
+
+</head>
+<body>
+    <div class="dashboard-container">
+        <header>
+            <a href="/logout" class="logout-button">Logout</a>
+            <h1 class="animated fadeInDown">Expense Dashboard</h1>
+            <p class="animated fadeIn">Total Expenses: <%= userExpenses.length %></p>
+            <p class="animated fadeIn">Total Amount Spent: <%= calculateTotalAmount(userExpenses) %></p>
+            <a href="/addexpense" class="animated fadeInUp">Add Expense</a>
+        </header>
+        <div class="search-container">
+            <label for="search">Search:</label>
+            <input type="text" id="search" oninput="searchExpenses()" placeholder="Type to search...">
+        </div>
+        <section class="expenses-section">
+            <h2 class="animated fadeInLeft" id="expensesTitle">Your Expenses:</h2>
+            <% if (userExpenses.length > 0) { %>
+                <ul class="animated fadeInRight" id="expensesList">
+                    <% userExpenses.forEach((expense, index) => { %>
+                        <li class="animated" data-index="<%= index %>">
+                            <div class="expense-info">
+                                <p class="name"><span>Name:</span> <%= expense.name %></p>
+                                <p class="amount"><span>Amount:</span> <%= expense.amount %></p>
+                                <p class="date"><span>Date:</span> <%= new Date(expense.date).toLocaleDateString('en-GB') %></p>
+                                <p class="category"><span>Category:</span> <%= expense.category %></p>
+                                <p class="tags"><span>Tags:</span> <%= expense.tags %></p>
+                            </div>
+                            <div class="actions">
+                                <a href="/editexpense/<%= expense._id %>" class="edit-button">Edit</a>
+                                <a href="/deleteexpense/<%= expense._id %>" class="delete-button">Delete</a>
+                            </div>
+                        </li>
+                    <% }); %>
+                </ul>
+            <% } else { %>
+                <p class="no-expense animated fadeIn">No expenses yet. <a href="/addexpense">Add one</a>.</p>
+            <% } %>
+        </section>
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" integrity="sha512-16esztaSRplJROstbIIdwX3N97V1+pZvV33ABoG1H2OyTttBxEGkTsoIVsiP1iaTtM8b3+hu2kB6pQ4Clr5yug==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollTrigger/1.0.6/ScrollTrigger.min.js" integrity="sha512-+LXqbM6YLduaaxq6kNcjMsQgZQUTdZp7FTaArWYFt1nxyFKlQSMdIF/WQ/VgsReERwRD8w/9H9cahFx25UDd+g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+    gsap.registerPlugin(ScrollTrigger);
+    const headerText = document.querySelector('.dashboard-container header h1');
+
+gsap.to(headerText, {
+    color: ['#3498db', '#e74c3c', '#2ecc71', '#f39c12'],
+    duration: 4,
+    repeat: -1,
+    yoyo: true,
+});
+gsap.from('.expenses-section', {
+    opacity: 0,
+    duration: 1,
+    delay: 0.5,
+    scrollTrigger: {
+        trigger: '.expenses-section',
+        start: 'top 80%',
+    },
+});
+
+        function searchExpenses() {
+            var input, ul, li, expenseDetails, i, txtValue;
+            input = document.getElementById('search');
+            ul = document.getElementById('expensesList');
+            li = ul.getElementsByTagName('li');
+
+            for (i = 0; i < li.length; i++) {
+                expenseDetails = li[i].getElementsByClassName('expense-info')[0];
+                // Combine all text content within expense-info
+                txtValue = expenseDetails.textContent || expenseDetails.innerText;
+
+                if (txtValue.toUpperCase().indexOf(input.value.toUpperCase()) > -1) {
+                    li[i].style.display = '';
+                } else {
+                    li[i].style.display = 'none';
+                }
+            }
+        }
+    </script>
+</body>
+</html>

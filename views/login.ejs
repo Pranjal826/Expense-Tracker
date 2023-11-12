@@ -1,0 +1,28 @@
+<!-- views/login.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Login</title>
+    <link rel="stylesheet" href="stylesheets/login.css">
+</head>
+<body>
+    <div class="login-container">
+        <h1>User Login</h1>
+        <!-- Login form -->
+        <form action="/login" method="POST" class="login-form">
+            <label for="username">Username:</label>
+            <input type="text" name="username" required>
+
+            <label for="password">Password:</label>
+            <input type="password" name="password" required>
+
+            <button type="submit" class="login-button">Login</button>
+        </form>
+
+        <!-- Link to the registration page -->
+        <p class="register-link">Don't have an account? <a href="/register">Register here</a></p>
+    </div>
+</body>
+</html>

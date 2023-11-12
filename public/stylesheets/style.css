@@ -1,0 +1,182 @@
+/* stylesheets/style.css */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f5f5f5;
+  margin: 0;
+  padding: 0;
+}
+
+.dashboard-container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+h1 {
+  font-size: 2em;
+  color: #333;
+}
+
+p {
+  color: #666;
+}
+
+a {
+  display: inline-block;
+  padding: 10px 20px;
+  margin-top: 10px;
+  background-color: #3498db;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+a:hover {
+  background-color: #2980b9;
+}
+
+.expenses-section {
+  text-align: center;
+  overflow: scroll;
+  max-height: 500px; /* Adjust this value based on your content height */
+}
+.expenses-section::-webkit-scrollbar{
+  display: none;
+  
+}
+
+
+h2 {
+  font-size: 1.5em;
+  color: #333;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 20px;
+  padding: 20px;
+  background-color: #ecf0f1;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+li:hover {
+  transform: scale(1.05);
+}
+
+.expense-info {
+  margin-bottom: 10px;
+}
+
+.name,
+.amount,
+.date,
+.category,
+.tags {
+  margin: 5px 0;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-around;
+}
+
+.edit-button,
+.delete-button {
+  padding: 8px 16px;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 3px;
+  transition: background-color 0.3s ease;
+}
+
+.edit-button:hover,
+.delete-button:hover {
+  background-color: #e74c3c;
+}
+
+.no-expense {
+  color: #666;
+  font-style: italic;
+}
+
+/* Add animation classes */
+.animated {
+  animation-duration: 1s;
+}
+
+.fadeIn {
+  opacity: 0;
+  animation: fadeIn ease-out 0.5s forwards;
+}
+
+.fadeInLeft {
+  opacity: 0;
+  transform: translateX(-20px);
+  animation: fadeInLeft ease-out 0.5s forwards;
+}
+
+.fadeInRight {
+  opacity: 0;
+  transform: translateX(20px);
+  animation: fadeInRight ease-out 0.5s forwards;
+}
+
+.fadeInDown {
+  opacity: 0;
+  transform: translateY(-20px);
+  animation: fadeInDown ease-out 0.5s forwards;
+}
+
+.fadeInUp {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp ease-out 0.5s forwards;
+}
+
+@keyframes fadeIn {
+  to {
+      opacity: 1;
+  }
+}
+
+@keyframes fadeInLeft {
+  to {
+      opacity: 1;
+      transform: translateX(0);
+  }
+}
+
+@keyframes fadeInRight {
+  to {
+      opacity: 1;
+      transform: translateX(0);
+  }
+}
+
+@keyframes fadeInDown {
+  to {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  to {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}

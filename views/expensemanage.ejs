@@ -1,0 +1,26 @@
+<!-- views/expensemanage.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Management</title>
+</head>
+<body>
+    <h1>Welcome <%= result.username %>!</h1>
+    <!-- Display expense details here -->
+    <a href="/addexpense">Add Expense</a>
+    <!-- Loop through expenses and display them -->
+    <% result.expenses.forEach(expense => { %>
+        <div>
+            <p>Name: <%= expense.name %></p>
+            <p>Amount: <%= expense.amount %></p>
+            <p>Date: <%= expense.date %></p>
+            <p>Category: <%= expense.category %></p>
+            <p>Tags: <%= expense.tags %></p>
+            <a href="/editexpense/<%= expense._id %>">Edit</a>
+            <a href="/deleteexpense/<%= expense._id %>">Delete</a>
+        </div>
+    <% }); %>
+</body>
+</html>

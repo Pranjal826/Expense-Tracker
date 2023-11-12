@@ -1,0 +1,32 @@
+
+.search-container {
+    position: relative;
+}
+
+label {
+    transform: translateY(-50%);
+    color: #333;
+    font-size: 16px;
+    pointer-events: none;
+    transition: 0.3s ease-out;
+}
+
+#search {
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    transition: 0.3s border-color ease-out;
+    width: 200px;
+}
+
+#search:focus {
+    outline: none;
+    border-color: #3498db;
+}
+
+#search:focus + label, #search:not(:placeholder-shown) + label {
+    transform: translateY(-150%);
+    font-size: 12px;
+    color: #3498db;
+}
