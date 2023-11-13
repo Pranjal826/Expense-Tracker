@@ -36,7 +36,7 @@ router.post("/register", async function (req, res, next) {
         // Validate password using regular expression
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-        if (!passwordRegex.test(req.body.password)) {
+        if (!passwordRegex.test(req.body.password.trim())) {
             // Password does not meet criteria
             const errorMessage = "Password must have at least 8 characters, one lowercase letter, one uppercase letter, one digit, and one special character";
             
