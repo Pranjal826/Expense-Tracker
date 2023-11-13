@@ -62,7 +62,7 @@ router.get('/login', (req, res) => {
 router.post(
     "/login",
     passport.authenticate("local", {
-        successRedirect: "/dashboard",
+        successRedirect: "/dashboard?success=Login%20successful", // Include success message in the query parameter
         failureRedirect: "/login",
     }),
     function (req, res, next) {}
@@ -73,12 +73,15 @@ router.get("/dashboard", isLoggedin, async function (req, res, next) {
         // Use req.user._id to find the user's expenses
         const userExpenses = await Expense.find({ user: req.user._id });
 
-        res.render("dashboard", { userExpenses,calculateTotalAmount });
+        // Retrieve the success message from the query parameter
+        const successMessage = req.query.success;
+
+        res.render("dashboard", { userExpenses, calculateTotalAmount, successMessage });
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: "Server Error" });
     }
-});// server-side script (e.g., routes/index.js)
+});
 
 // Logout
 router.get('/logout', function(req, res, next){
