@@ -9,10 +9,10 @@ const Expense=require('../models/expense')
 const LocalStrategy = require("passport-local");
 const isLoggedin = require('./isLoggedin')
 passport.use(new LocalStrategy(User.authenticate()));
-router.get('/register',(req,res)=>{
-    res.render('register')
-}
-)
+router.get('/register', (req, res) => {
+    res.render('register', { error: req.query.error, success: req.query.success });
+});
+
 router.post("/register", async function (req, res, next) {
     try {
         // Check for duplicate username or email
@@ -23,38 +23,18 @@ router.post("/register", async function (req, res, next) {
         if (existingUser) {
             // User or email already exists
             const errorMessage = "Username or email already in use";
-            
-            // Return a response with a script to display the alert
-            return res.status(409).send(`
-                <script>
-                    alert("${errorMessage}");
-                    window.location.href = "/register"; // Redirect to registration page
-                </script>
-            `);
+            const encodedError = encodeURIComponent(errorMessage);
+            return res.redirect(`/register?error=${encodedError}`);
         }
 
         // Validate password using regular expression
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])(?=.*[#])[A-Za-z\d@$!%*?&#]{8,}$/;
-
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&#]{8,}$/;
 
         if (!passwordRegex.test(req.body.password.trim())) {
             // Password does not meet criteria
             const errorMessage = "Password must have at least 8 characters, one lowercase letter, one uppercase letter, one digit, and one special character";
-            
-            // Return a response with a script to display the alert
-            return res.status(400).send(`
-            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-            <script>
-                swal({
-                    title: "Error",
-                    text: "${errorMessage}",
-                    icon: "error",
-                }).then(() => {
-                    window.location.href = "/register"; // Redirect to registration page
-                });
-            </script>
-        `);
-        
+            const encodedError = encodeURIComponent(errorMessage);
+            return res.redirect(`/register?error=${encodedError}`);
         }
 
         // If no duplicate and password is valid, proceed with user registration
@@ -63,27 +43,21 @@ router.post("/register", async function (req, res, next) {
             req.body.password
         );
 
-        res.send(`
-            <script>
-                swal({
-                    title: "Registration Successful",
-                    text: "You have successfully registered.",
-                    icon: "success",
-                }).then(() => {
-                    window.location.href = "/login"; // Redirect to login page
-                });
-            </script>
-        `);
+        // Registration successful
+        const successMessage = "You have successfully registered.";
+        const encodedSuccess = encodeURIComponent(successMessage);
+        return res.redirect(`/login?success=${encodedSuccess}`);
     } catch (error) {
         console.error(error);
-        res.status(500).send("Internal Server Error");
+        const encodedError = encodeURIComponent("Internal Server Error");
+        return res.redirect(`/register?error=${encodedError}`);
     }
 });
 
-router.get('/login',(req,res)=>{
-    res.render('login')
-}
-)
+
+router.get('/login', (req, res) => {
+    res.render('login', { success: req.query.success });
+});
 
 router.post(
     "/login",

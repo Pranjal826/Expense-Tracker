@@ -26,5 +26,20 @@
     </br>
         <p class="forget-link">Forget Password? <a href="/forget">Click here</a></p>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+    <script>
+        
+        var success = '<%= success %>';
+     
+        if (success) {
+            swal.fire({
+                icon: 'success',
+                title: 'Registration Successful',
+                text: success,
+            });
+        }
+    </script>
 </body>
 </html>

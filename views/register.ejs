@@ -27,5 +27,31 @@
         <!-- Link to the login page -->
         <p class="login-link">Already have an account? <a href="/login">Login here</a></p>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+    <script>
+        
+        var success = '<%= success %>';
+        var error = '<%= error %>';
+
+        if (success) {
+            swal.fire({
+                icon: 'success',
+                title: 'Registration Successful',
+                text: success,
+            });
+        }
+
+        // Check if there is an error message and show a SweetAlert
+        if (error) {
+            swal.fire({
+                icon: 'error',
+                title: 'Registration Failed',
+                text: error,
+            });
+        }
+    </script>
 </body>
 </html>
