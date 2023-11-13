@@ -43,11 +43,18 @@ router.post("/register", async function (req, res, next) {
             
             // Return a response with a script to display the alert
             return res.status(400).send(`
-                <script>
-                    alert("${errorMessage}");
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <script>
+                swal({
+                    title: "Error",
+                    text: "${errorMessage}",
+                    icon: "error",
+                }).then(() => {
                     window.location.href = "/register"; // Redirect to registration page
-                </script>
-            `);
+                });
+            </script>
+        `);
+        
         }
 
         // If no duplicate and password is valid, proceed with user registration
@@ -56,7 +63,17 @@ router.post("/register", async function (req, res, next) {
             req.body.password
         );
 
-        res.redirect("/login");
+        res.send(`
+            <script>
+                swal({
+                    title: "Registration Successful",
+                    text: "You have successfully registered.",
+                    icon: "success",
+                }).then(() => {
+                    window.location.href = "/login"; // Redirect to login page
+                });
+            </script>
+        `);
     } catch (error) {
         console.error(error);
         res.status(500).send("Internal Server Error");
