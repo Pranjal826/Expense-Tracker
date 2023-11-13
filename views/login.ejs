@@ -32,12 +32,19 @@
     <script>
         
         var success = '<%= success %>';
-     
+        var error= '<%=error%>'
         if (success) {
             swal.fire({
                 icon: 'success',
                 title: 'Registration Successful',
                 text: success,
+            });
+        }
+        if (error) {
+            swal.fire({
+                icon: 'error',
+                title: 'Registration Failed',
+                text: error,
             });
         }
     </script>

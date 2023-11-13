@@ -56,14 +56,14 @@ router.post("/register", async function (req, res, next) {
 
 
 router.get('/login', (req, res) => {
-    res.render('login', { success: req.query.success });
+    res.render('login', { success: req.query.success,error:req.query.error });
 });
 
 router.post(
     "/login",
     passport.authenticate("local", {
         successRedirect: "/dashboard?success=Login%20successful", // Include success message in the query parameter
-        failureRedirect: "/login",
+        failureRedirect: "/login?error=InvalidCredentials", // Redirect with an error parameter
     }),
     function (req, res, next) {}
 );
