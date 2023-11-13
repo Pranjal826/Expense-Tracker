@@ -13,6 +13,8 @@ const session = require("express-session");
 const manage=require('./routes/expensemanage')
 const auth=require('./routes/auth')
 
+const forgetRoutes=require('./routes/forget')
+const sendMail=require('./routes/sendmail')
 var app = express();
 
 // view engine setup
@@ -40,6 +42,8 @@ passport.deserializeUser(User.deserializeUser());
 app.use('/', indexRouter);
 app.use('/',manage)
 app.use('/',auth)
+app.use("/", forgetRoutes);
+app.use("/", sendMail);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
