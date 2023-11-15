@@ -19,6 +19,11 @@ const UserSchema = new mongoose.Schema({
         type: Number,
         default: -1,
       },
+      isVerified: {
+        type: Boolean,
+        default: false,
+    },
+    verificationToken: String
 })
 UserSchema.plugin(plm)
 module.exports=mongoose.model('User',UserSchema)

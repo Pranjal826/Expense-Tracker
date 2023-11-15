@@ -5,16 +5,29 @@ const {calculateTotalAmount}=require('./calculate')
 const passport=require('passport')
 const session=require('express-session')
 const Expense=require('../models/expense')
-
+const crypto=require('crypto')
+const nodemailer = require('nodemailer');
 const LocalStrategy = require("passport-local");
 const isLoggedin = require('./isLoggedin')
 passport.use(new LocalStrategy(User.authenticate()));
+const transport1 = nodemailer.createTransport({
+    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 465,
+    auth: {
+        user: "pranjalshukla245@gmail.com",
+        pass: "yave tcdt eodj flll",
+    },
+});
 router.get('/register', (req, res) => {
     res.render('register', { error: req.query.error, success: req.query.success });
 });
 
+
 router.post("/register", async function (req, res, next) {
     try {
+        const verificationToken = crypto.randomBytes(20).toString('hex');
+
         // Check for duplicate username or email
         const existingUser = await User.findOne({
             $or: [{ username: req.body.username }, { email: req.body.email }],
@@ -38,13 +51,28 @@ router.post("/register", async function (req, res, next) {
         }
 
         // If no duplicate and password is valid, proceed with user registration
-        await User.register(
-            { username: req.body.username, email: req.body.email },
-            req.body.password
-        );
+        const newUser = new User({ username: req.body.username, email: req.body.email });
+
+        // Set verification token and flag for email verification
+        newUser.verificationToken = verificationToken;
+        newUser.isVerified = false;
+
+        // Register user with Passport-local
+        await User.register(newUser, req.body.password);
+
+        // Send verification email
+        const verificationLink = `https://expense-tracker-brown-psi.vercel.app/verify/${verificationToken}`;
+        const mailOptions = {
+            from: 'pranjalshukla245@gmail.com',
+            to: req.body.email,
+            subject: 'Verify Your Email',
+            html: `Click <a href="${verificationLink}">here</a> to verify your email.`,
+        };
+
+        await transport1.sendMail(mailOptions);
 
         // Registration successful
-        const successMessage = "You have successfully registered.";
+        const successMessage = "You have successfully registered. Please check your email to verify your account.";
         const encodedSuccess = encodeURIComponent(successMessage);
         return res.redirect(`/login?success=${encodedSuccess}`);
     } catch (error) {
@@ -59,14 +87,19 @@ router.get('/login', (req, res) => {
     res.render('login', { success: req.query.success,error:req.query.error });
 });
 
-router.post(
-    "/login",
-    passport.authenticate("local", {
-        successRedirect: "/dashboard?success=Login%20successful", // Include success message in the query parameter
-        failureRedirect: "/login?error=InvalidCredentials", // Redirect with an error parameter
-    }),
-    function (req, res, next) {}
-);
+router.post("/login", passport.authenticate("local", {
+    failureRedirect: "/login?error=Email%20or%20Password%20Wrong",
+}), function (req, res, next) {
+    if (req.user && req.user.isVerified) {
+        res.redirect("/dashboard?success=Login%20successful");
+    } else {
+        req.logout(function(err) {
+            if (err) { return next(err); }
+            res.redirect("/login?error=Email%20or%20Password%20Wrong");
+          });
+    }
+});
+
 // Dashboard
 router.get("/dashboard", isLoggedin, async function (req, res, next) {
     try {
@@ -83,6 +116,27 @@ router.get("/dashboard", isLoggedin, async function (req, res, next) {
     }
 });
 
+router.get('/verify/:token', async function (req, res, next) {
+    try {
+        const user = await User.findOne({ verificationToken: req.params.token });
+
+        if (!user) {
+            return res.status(400).send('Invalid verification token');
+        }
+
+        user.isVerified = true;
+        user.verificationToken = undefined;
+        await user.save();
+
+        const successMessage = 'Email verification successful. You can now log in.';
+        const encodedSuccess = encodeURIComponent(successMessage);
+        return res.redirect(`/login?success=${encodedSuccess}`);
+    } catch (error) {
+        
+        console.error(error);
+        res.status(500).json({ error: 'Server Error' });
+    }
+});
 // Logout
 router.get('/logout', function(req, res, next){
     req.logout(function(err) {
