@@ -34,30 +34,22 @@ router.post("/register", async function (req, res, next) {
         });
 
         if (existingUser) {
-            // User or email already exists
             const errorMessage = "Username or email already in use";
             const encodedError = encodeURIComponent(errorMessage);
             return res.redirect(`/register?error=${encodedError}`);
         }
 
-        // Validate password using regular expression
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&#]{8,}$/;
 
         if (!passwordRegex.test(req.body.password.trim())) {
-            // Password does not meet criteria
             const errorMessage = "Password must have at least 8 characters, one lowercase letter, one uppercase letter, one digit, and one special character";
             const encodedError = encodeURIComponent(errorMessage);
             return res.redirect(`/register?error=${encodedError}`);
         }
-
-        // If no duplicate and password is valid, proceed with user registration
         const newUser = new User({ username: req.body.username, email: req.body.email });
 
-        // Set verification token and flag for email verification
         newUser.verificationToken = verificationToken;
         newUser.isVerified = false;
-
-        // Register user with Passport-local
         await User.register(newUser, req.body.password);
 
         // Send verification email
@@ -66,12 +58,72 @@ router.post("/register", async function (req, res, next) {
             from: 'pranjalshukla245@gmail.com',
             to: req.body.email,
             subject: 'Verify Your Email',
-            html: `Click <a href="${verificationLink}">here</a> to verify your email.`,
+            html: `<!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Email Verification</title>
+                <style>
+                    body {
+                        font-family: 'Arial', sans-serif;
+                        line-height: 1.6;
+                        background-color: #f4f4f4;
+                        padding: 20px;
+                        text-align: center;
+                    }
+            
+                    .container {
+                        max-width: 600px;
+                        margin: 0 auto;
+                        background-color: #ffffff;
+                        padding: 30px;
+                        border-radius: 8px;
+                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                    }
+            
+                    h2 {
+                        color: #333333;
+                    }
+            
+                    p {
+                        color: #666666;
+                    }
+            
+                    a {
+                        color: #3498db;
+                        text-decoration: none;
+                        font-weight: bold;
+                    }
+            
+                    a:hover {
+                        color: #1e70bf;
+                    }
+            
+                    .footer {
+                        margin-top: 20px;
+                        color: #999999;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <h2>Email Verification</h2>
+                    <p>Dear User,</p>
+                    <p>Thank you for registering with Expense Tracker. To complete your registration, please click the link below to verify your email:</p>
+                    <p><a href="${verificationLink}">${verificationLink}</a></p>
+                   
+                    <div class="footer">
+                        <p>Best regards,<br>Expense Tracker Team</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+            
+            `,
         };
 
         await transport1.sendMail(mailOptions);
-
-        // Registration successful
         const successMessage = "You have successfully registered. Please check your email to verify your account.";
         const encodedSuccess = encodeURIComponent(successMessage);
         return res.redirect(`/login?success=${encodedSuccess}`);
@@ -100,13 +152,9 @@ router.post("/login", passport.authenticate("local", {
     }
 });
 
-// Dashboard
 router.get("/dashboard", isLoggedin, async function (req, res, next) {
     try {
-        // Use req.user._id to find the user's expenses
         const userExpenses = await Expense.find({ user: req.user._id });
-
-        // Retrieve the success message from the query parameter
         const successMessage = req.query.success;
 
         res.render("dashboard", { userExpenses, calculateTotalAmount, successMessage });
